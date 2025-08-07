@@ -14,6 +14,7 @@ inventory_bp = Blueprint('inventory', __name__)
 @auth_bp.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
+    logger.debug(f'Received data: {data}')
     if not data:
         return jsonify({'message': 'Request body is missing'}), 400
 
@@ -21,6 +22,7 @@ def login():
     email = data.get('email')
     password = data.get('password')
 
+    logger.debug(f'Username: {username}, Email: {email}, Password: {password}')
     if not all([username, email, password]):
         return jsonify({'message': 'Missing username, email, or password'}), 400
 
@@ -28,7 +30,7 @@ def login():
     if not user or not check_password_hash(user.password, password):
         return jsonify({'message': 'Invalid credentials'}), 400
 
-    access_token = create_access_token(identity={'id': user.id}, expires_delta=timedelta(days=7))  # 7 days instead of 1 hour
+    access_token = create_access_token(identity={'id': user.id})
     return jsonify({'message': 'Login successful', 'token': access_token}), 200
 
 @auth_bp.route('/signup', methods=['POST'])
