@@ -14,7 +14,7 @@ def create_app():
     CORS(app)
 
     with app.app_context():
-        db.create_all()
+        db.create_all()  # Ensure tables are created on deploy
 
     from .routes import auth_bp, inventory_bp
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
